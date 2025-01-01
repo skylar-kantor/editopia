@@ -11,8 +11,10 @@ int main()
 {
 
     GapBuffer editor;
+    
     initscr();
     cbreak();
+    raw();
     noecho();
     keypad(stdscr, TRUE);
 
@@ -23,9 +25,13 @@ int main()
     {
         clear();
         //draw everything
-        for (size_t i = 0; i < editor.gap_start; ++i) 
+        for (size_t i = 0; i < editor.buffer.size(); ++i)
         {
-        printw("%c", editor.buffer[i]);
+            // Only print characters that are before or after the gap
+            if (i < editor.gap_start || i >= editor.gap_end)
+            {
+                printw("%c", editor.buffer[i]);
+            }
         }
         char press = getch();
         //Handle movement and such, do this next
@@ -41,26 +47,32 @@ int main()
         {
             editor.deleteChar(editor.gap_start - 1);
         }
+        else if (int(press) == 24)
+        {
+            break;
+        }
+        else if (int(press) == 19)
+        {
+            ofstream outfile("output.txt"); 
+            for (size_t i = 0; i < editor.buffer.size(); ++i)
+        {
+            // Only print characters that are before or after the gap
+            if (i < editor.gap_start || i >= editor.gap_end)
+            {
+                outfile << editor.buffer[i];
+            }
+        }
+            outfile.close();
+        }
         //Else, insert to the temp buffer
         else 
         {
         editor.insert(press);
         }
-        //draw everything after the cursor
-        for (size_t i = editor.gap_end; i < editor.buffer.size(); ++i) 
-        {
-        printw("%c", editor.buffer[i]);
-        }
+       
         refresh();
     }
     // deallocates memory and ends ncurses
     endwin();
-    cout.flush();
-    for (char c : editor.buffer)
-    {
-        cout << c;
-    }
-    cout << '\n';
-    cout.flush(); 
     return 0;
 }
