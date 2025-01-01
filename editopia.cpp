@@ -8,33 +8,19 @@
 using namespace std;
 int main()
 {
-    string fname;
-    cin >> fname;
-    vector<vector<char>> textbuf;
-    ifstream infile(fname);
-    string line;
-    while (getline(infile, line))
-    {
-        istringstream iss(line);
-        string working_line = iss.str();
-        vector<char> proccessed_line;
-        for (char c : working_line)
-        {
-            proccessed_line.push_back(c);
-        }
-        proccessed_line.push_back('\n'); //We're eating the newline, so we can add it back here
-        textbuf.push_back(proccessed_line);
-    }
     
     initscr();
-    for (vector<char> l : textbuf)
+    cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
+    
+    
+    while(1)
     {
-        string line = string(l.begin(), l.end());
-        printw("%s", line.c_str());
-        refresh();
+        char input = getch();
+        printw("%c", input);
     }
-    getch();
-
+    
     // deallocates memory and ends ncurses
     endwin();
     return 0;
