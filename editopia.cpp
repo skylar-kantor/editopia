@@ -6,20 +6,17 @@
 #include <ncurses.h>
 #include "gapBuffer.h"
 
+#define CTRL(c) ((c) & 0x1f)
+
 using namespace std;
 int main()
 {
-
-    GapBuffer editor;
-    
+    GapBuffer editor;    
     initscr();
     cbreak();
     raw();
     noecho();
     keypad(stdscr, TRUE);
-
-
-
 
     while (1)
     {
@@ -35,23 +32,23 @@ int main()
         }
         char press = getch();
         //Handle movement and such, do this next
-        if (int(press) == 5)
+        if (press == KEY_RIGHT)
         {
             editor.right(1);
         }
-        else if (int(press) == 4)
+        else if (press == KEY_LEFT)
         {
             editor.left(1);
         }
-        else if (int(press) == 7)
+        else if (press == KEY_BACKSPACE || press == 7)
         {
             editor.deleteChar(editor.gap_start - 1);
         }
-        else if (int(press) == 24)
+        else if (press == CTRL('X'))
         {
             break;
         }
-        else if (int(press) == 19)
+        else if (press == CTRL('S'))
         {
             ofstream outfile("output.txt"); 
             for (size_t i = 0; i < editor.buffer.size(); ++i)
